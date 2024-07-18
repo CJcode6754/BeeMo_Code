@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 
 session_start(); // Start the session
 
-include 'C:/xampp/htdocs/Capstone_BeeMo/connection/mysql_connection.php';
+include 'C:/xampp/htdocs/BeeMo_Code/connection/mysql_connection.php';
 
 if (isset($_POST['submit'])) {
     // Sanitize and validate email
@@ -97,6 +97,15 @@ if (isset($_POST['submit'])) {
                                   <p><b>Don't have an account?</p>
                                   <a href="signup_form.html" class="text-dark"><u>Register</u></a></b>
                                 </div>
+                                <?php
+                                    if (isset($_SESSION['error'])) {
+                                        echo '<span class="error-msg">' . $_SESSION['error'] . '</span>';
+                                        unset($_SESSION['error']);
+                                    } elseif (isset($_SESSION['status'])) {
+                                        echo '<span class="status-msg">' . $_SESSION['status'] . '</span>';
+                                        unset($_SESSION['status']);
+                                    }
+                                ?>
                                 <div class="form-floating pb-3 position-relative">
                                   <input name="email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com" required>
                                   <label class="" for="floatingInput"><i class="fa-solid fa-envelope"></i>  Email address </label>

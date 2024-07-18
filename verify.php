@@ -4,12 +4,12 @@
     error_reporting(E_ALL);
 
     session_start();
-    include 'C:/xampp/htdocs/Capstone_BeeMo/connection/mysql_connection.php';
+    include 'C:/xampp/htdocs/BeeMo_Code/connection/mysql_connection.php';
 
     // Include PHPMailer and configure SMTP settings
-    require 'C:/xampp/htdocs/Capstone_BeeMo/vendor/phpmailer/phpmailer/src/Exception.php';
-    require 'C:/xampp/htdocs/Capstone_BeeMo/vendor/phpmailer/phpmailer/src/PHPMailer.php';
-    require 'C:/xampp/htdocs/Capstone_BeeMo/vendor/phpmailer/phpmailer/src/SMTP.php';
+    require 'C:/xampp/htdocs/BeeMo_Code/vendor/phpmailer/phpmailer/src/Exception.php';
+    require 'C:/xampp/htdocs/BeeMo_Code/vendor/phpmailer/phpmailer/src/PHPMailer.php';
+    require 'C:/xampp/htdocs/BeeMo_Code/vendor/phpmailer/phpmailer/src/SMTP.php';
 
     use PHPMailer\PHPMailer\PHPMailer;
     use PHPMailer\PHPMailer\SMTP;

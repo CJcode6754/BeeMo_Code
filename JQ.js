@@ -43,21 +43,6 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     }
 });
 
-loginForm.addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    // Validate all fields here
-
-    if (allFieldsValid) {
-        // Remove invalid feedback and submit the form
-        loginForm.submit();
-    } else {
-        // Show invalid feedback for each field
-    }
-});
-
-
-
 let timer = document.getElementById('timer');
         let btn = document.getElementById('btn');
         let timeLeft = 180; // 3 minutes in seconds

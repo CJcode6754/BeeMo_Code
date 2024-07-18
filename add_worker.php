@@ -4,7 +4,7 @@
     error_reporting(E_ALL);
 
     session_start();
-    include('C:/xampp/htdocs/BeeMo/BeeMoUI/connection/mysql_connection.php');
+    include('C:/xampp/htdocs/BeeMo_Code/connection/mysql_connection.php');
 ?>
 
 

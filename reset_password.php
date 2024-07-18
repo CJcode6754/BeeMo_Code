@@ -4,7 +4,7 @@
   error_reporting(E_ALL);
 
   session_start();
-  include('C:/xampp/htdocs/Capstone_BeeMo/connection/mysql_connection.php');
+  include('C:/xampp/htdocs/BeeMo_Code/connection/mysql_connection.php');
   if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
