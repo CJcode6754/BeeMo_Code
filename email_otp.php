@@ -83,7 +83,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/b4ce5ff90a.js" crossorigin="anonymous"></script>
 
-    <title>Document</title>
+    <title>Email OTP</title>
 </head>
 
 <body>

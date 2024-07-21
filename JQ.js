@@ -15,33 +15,75 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    const emailInput = document.getElementById('floatingInput');
+    const passwordInput = document.getElementById('floatingPassword');
+    const submitButton = document.querySelector('#login');
 
-    var email = document.getElementById('floatingInput');
-    var password = document.getElementById('floatingPassword');
+    let emailTouched = false;
+    let passwordTouched = false;
 
-    var emailValid = email.checkValidity();
-    var passwordValid = password.checkValidity();
-
-    if (emailValid && passwordValid) {
-        email.classList.remove('is-invalid');
-        password.classList.remove('is-invalid');
-        this.submit();
-    } else {
-        if (!emailValid) {
-            email.classList.add('is-invalid');
-        } else {
-            email.classList.remove('is-invalid');
+    const validateEmail = () => {
+        const emailValid = emailInput.checkValidity();
+        if (emailTouched) {
+            emailInput.classList.toggle('is-invalid', !emailValid);
         }
+        return emailValid;
+    };
 
-        if (!passwordValid) {
-            password.classList.add('is-invalid');
-        } else {
-            password.classList.remove('is-invalid');
+    const validatePassword = () => {
+        const passwordValid = passwordInput.checkValidity();
+        if (passwordTouched) {
+            passwordInput.classList.toggle('is-invalid', !passwordValid);
         }
-    }
+        return passwordValid;
+    };
+
+    const validateForm = () => {
+        const emailValid = validateEmail();
+        const passwordValid = validatePassword();
+        // Enable or disable button based on form validity
+        submitButton.disabled = !(emailValid && passwordValid);
+    };
+
+    emailInput.addEventListener('input', () => {
+        emailTouched = true;
+        validateForm();
+    });
+
+    passwordInput.addEventListener('input', () => {
+        passwordTouched = true;
+        validateForm();
+    });
+
+    loginForm.addEventListener('submit', function(event) {
+
+        const emailValid = validateEmail();
+        const passwordValid = validatePassword();
+
+        if (emailValid && passwordValid) {
+            this.submit();
+        } else {
+            if (!emailTouched) {
+                emailTouched = true;
+                validateEmail();
+            }
+
+            if (!passwordTouched) {
+                passwordTouched = true;
+                validatePassword();
+            }
+        }
+    });
+
+    // Initial validation to ensure the button state is correct on page load
+    validateForm();
 });
+
+
+
+
 
 let timer = document.getElementById('timer');
         let btn = document.getElementById('btn');

@@ -64,7 +64,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/b4ce5ff90a.js" crossorigin="anonymous"></script>
 
-    <title>Document</title>
+    <title>Reset Password</title>
 </head>
 
 <body>
@@ -79,7 +79,7 @@
                       <main class="form-signin w-auto m-auto px4">
                           <form action="reset_password.php" method="post" id="ResetpwForm" novalidate>
                             <div class="top px-2 pt-4">
-                              <a href="index.html"><img id="loginLogo"  src="img/LOGO2.png" alt="Logo"></a>
+                              <a href="index.php"><img id="loginLogo"  src="img/LOGO2.png" alt="Logo"></a>
                               <p class="about pt-1">ABOUT&nbsp;US</p>
                             </div>
                             <hr class="d-block d-lg-none">

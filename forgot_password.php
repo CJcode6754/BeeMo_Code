@@ -108,7 +108,7 @@
                       <main class="form-signin w-auto m-auto px4">
                             <form action="forgot_password.php" method="post" id="forgotForm" novalidate>
                             <div class="top px-2 pt-4">
-                                <a href="index.html"><img id="loginLogo"  src="img/LOGO2.png" alt="Logo"></a>
+                                <a href="index.php"><img id="loginLogo"  src="img/LOGO2.png" alt="Logo"></a>
                                 <p class="about pt-1">ABOUT&nbsp;US</p>
                               </div>
                               <hr class="d-block d-lg-none">

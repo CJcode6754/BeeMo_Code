@@ -1,11 +1,56 @@
 <?php
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-    session_start();
-    include('C:/xampp/htdocs/BeeMo_Code/connection/mysql_connection.php');
+session_start();
+include('C:/xampp/htdocs/BeeMo_Code/connection/mysql_connection.php');
+
+// Check if the admin is logged in
+if (!isset($_SESSION['adminID'])) {
+    header('Location: index.php'); // Redirect to login page if not logged in
+    exit;
+}
+
+if (isset($_POST['submit'])) {
+    $name = filter_var($_POST['user_name'], FILTER_SANITIZE_SPECIAL_CHARS);
+    $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+    $number = filter_var($_POST['number'], FILTER_SANITIZE_SPECIAL_CHARS);
+    $password = $_POST['password'];
+    $password_hash = password_hash($password, PASSWORD_BCRYPT);
+
+    if (isset($_SESSION['adminID'])) {
+        $adminID = $_SESSION['adminID'];
+    } else {
+        $_SESSION['error'] = 'Admin ID not found';
+        header('Location: add_worker.php');
+        exit;
+    }
+
+    // Check if email already exists
+    $check_email = "SELECT * FROM user_table WHERE email = '$email'";
+    $check_email_query = mysqli_query($conn, $check_email);
+
+    if (mysqli_num_rows($check_email_query) > 0) {
+        $_SESSION['error'] = 'Email Address Already Exists';
+        header('Location: add_worker.php');
+        exit;
+    }
+
+    $insert_user = "INSERT INTO user_table (user_name, email, number, password, adminID) VALUES ('$name', '$email', '$number', '$password_hash', '$adminID')";
+    $insert_user_run = mysqli_query($conn, $insert_user);
+
+    if ($insert_user_run) {
+        header('Location: add_worker.php');
+        exit;
+    } else {
+        $_SESSION['error'] = 'Error: ' . mysqli_error($conn);
+        header('Location: add_worker.php');
+        exit;
+    }
+}
 ?>
+
 
 
 <!DOCTYPE html>
@@ -13,7 +58,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BeeMo</title>
+    <title>Worker</title>
     <link rel="stylesheet" href="add_worker.css">
     <link rel="icon" href="img/beemo-ico.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -29,13 +74,13 @@
         </div>
         <ul class="sidebar-menu p-3 py-1 m-0 mb-0">
             <li class="sidebar-menu-item">
-                <a href="home.html">
+                <a href="admin_page.php">
                     <i class="fa-solid fa-house sidebar-menu-item-icon"></i>
                     Home
                 </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="choosehive.html">
+                <a href="parameter_monitoring">
                     <i class="fa-solid fa-temperature-three-quarters sidebar-menu-item-icon"></i>
                     Parameters Monitoring
                 </a>
@@ -47,25 +92,25 @@
                 </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="harvestcycle.html">
+                <a href="harvest_cycle.php">
                     <i class="fa-solid fa-arrows-spin sidebar-menu-item-icon"></i>
                     Harvest Cycle
                 </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="beeguide.html">
+                <a href="beeguide.php">
                     <i class="fa-solid fa-book-open sidebar-menu-item-icon"></i>
                     Bee Guide
                 </a>
             </li>
             <li class="sidebar-menu-item active">
-                <a href="#">
+                <a href="add_worker.php">
                     <i class="fa-solid fa-user sidebar-menu-item-icon"></i>
                     Worker
                 </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="#">
+                <a href="about.php">
                     <i class="fa-solid fa-circle-info sidebar-menu-item-icon"></i>
                     About
                 </a>
@@ -116,7 +161,7 @@
                 <div class="px-4 py-4 my-4 text-center">
                     <p class="beeguide-text fs-4 mb-5 fw-bold worker-highlight">Workers</p>
                     <div class="table-responsive mt-5" style="max-height: 165px; overflow-y: auto;">
-                        <table class="table worker-table border-dark">
+                        <table class="table worker-table border-dark" name = "worker_list">
                             <thead>
                                 <tr>
                                     <th style="background-color: #FAEF9B;">Full Name</th>
@@ -128,23 +173,22 @@
                                 </tr>
                             </thead>
                             <tbody id="workerTableBody">
-                                <!-- Table body content -->
-                                <tr>
-                                    <td>Renz Eryll Ramelo</td>
-                                    <td>renzeryll@gmail.com</td>
-                                    <td>0123456789</td>
-                                    <td>password123</td>
-                                    <td><button class="btn edit-btn"><i class="fa-regular fa-pen-to-square"></i></button></td>
-                                    <td><button class="btn delete-btn"><i class="fa-regular fa-trash-can" style="color: red;"></i></button></td>
-                                </tr>
-                                <tr>
-                                    <td>Ceejay Ibabiosa</td>
-                                    <td>ceejayibabiosa@gmail.com</td>
-                                    <td>0987654321</td>
-                                    <td>password456</td>
-                                    <td><button class="btn edit-btn"><i class="fa-regular fa-pen-to-square"></i></button></td>
-                                    <td><button class="btn delete-btn"><i class="fa-regular fa-trash-can" style="color: red;"></i></button></td>
-                                </tr>
+                            <?php
+                                $worker_list = "SELECT user_name, email, number,  password FROM user_table";
+                                $list_query = mysqli_query($conn, $worker_list);
+                                while($row = $list_query ->fetch_assoc()){
+                                    echo "
+                                    <tr>
+                                        <td>". $row['user_name'] ."</td>
+                                        <td>". $row['email'] ."</td>
+                                        <td>". $row['number'] ."</td>
+                                        <td>". $row['password'] ." </td>
+                                        <td><button class='btn edit-btn'><i class='fa-regular fa-pen-to-square'></i></button></td>
+                                        <td><button class='btn delete-btn'><i class='fa-regular fa-trash-can' style='color: red;'></i></button></td>
+                                    </tr>
+                                    ";
+                                }
+                            ?>
                             </tbody>
                         </table>
                     </div>
@@ -165,33 +209,33 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body m-5">
-                            <form id="workerForm" novalidate>
+                            <form action="add_worker.php" method="post" id="workerForm" novalidate>
                                 <div class="d-grid d-sm-flex justify-content-sm-center gap-4 mb-1">
                                     <div class="col-md-6">
                                         <label for="fullName" class="form-label" style="font-size: 13px;">Full Name</label>
-                                        <input type="text" class="form-control rounded-3 py-2" style="border: 1.8px solid #2B2B2B; font-size: 13px;" id="fullName" required>
+                                        <input name="user_name" type="text" class="form-control rounded-3 py-2" style="border: 1.8px solid #2B2B2B; font-size: 13px;" id="fullName" required>
                                         <div class="invalid-feedback">Please enter a full name.</div>
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label for="email" class="form-label" style="font-size: 13px;">Email</label>
-                                        <input type="email" class="form-control rounded-3 py-2" style="border: 1.8px solid #2B2B2B; font-size: 13px;" id="email" required>
+                                        <input name="email" type="email" class="form-control rounded-3 py-2" style="border: 1.8px solid #2B2B2B; font-size: 13px;" id="email" required>
                                         <div class="invalid-feedback">Please enter a valid email address.</div>
                                     </div>
                                 </div>
                                 <div class="d-grid mt-3 d-sm-flex justify-content-sm-center gap-4">
                                     <div class="col-md-6">
                                         <label for="phoneNumber" class="form-label" style="font-size: 13px;">Phone Number</label>
-                                        <input type="text" class="form-control rounded-3 py-2" style="border: 1.8px solid #2B2B2B; font-size: 13px;" id="phoneNumber" required>
+                                        <input name="number" type="text" class="form-control rounded-3 py-2" style="border: 1.8px solid #2B2B2B; font-size: 13px;" id="phoneNumber" required>
                                         <div class="invalid-feedback">Please enter a phone number.</div>
                                     </div>
                                     <div class="col-md-6 mb-2">
                                         <label for="password" class="form-label" style="font-size: 13px;">Password</label>
-                                        <input type="password" class="form-control rounded-3 py-2" style="border: 1.8px solid #2B2B2B; font-size: 13px;" id="password" required>
+                                        <input name="password" type="password" class="form-control rounded-3 py-2" style="border: 1.8px solid #2B2B2B; font-size: 13px;" id="password" required>
                                         <div class="invalid-feedback">Please enter a password.</div>
                                     </div>
                                 </div>
                                 <div class="mt-5 d-flex justify-content-center">
-                                    <button type="submit" class="save-button px-4 border border-1 border-black fw-semibold"><span class="fw-bold">+</span> Add Worker</button>
+                                    <button id="btn" name="submit" type="submit" class="save-button px-4 border border-1 border-black fw-semibold"><span class="fw-bold">+</span> Add Worker</button>
                                 </div>
                             </form>
                         </div>
@@ -211,13 +255,13 @@
         </div>
         <ul class="sidebar-menu p-2 py-2 m-0 mb-0">
             <li class="sidebar-menu-item2">
-                <a href="home.html">
+                <a href="admin_page.php">
                     <i class="fa-solid fa-house sidebar-menu-item-icon2"></i>
                     Home
                 </a>
             </li>
             <li class="sidebar-menu-item2 py-1">
-                <a href="choosehive.html">
+                <a href="choose_hive.php">
                     <i class="fa-solid fa-temperature-three-quarters sidebar-menu-item-icon2"></i>
                     Parameters Monitoring
                 </a>
@@ -229,25 +273,25 @@
                 </a>
             </li>
             <li class="sidebar-menu-item2">
-                <a href="#">
+                <a href="harvest_cycle.php">
                     <i class="fa-solid fa-arrows-spin sidebar-menu-item-icon2"></i>
                     Harvest Cycle
                 </a>
             </li>
             <li class="sidebar-menu-item2">
-                <a href="beeguide.html">
+                <a href="beeguide.php">
                     <i class="fa-solid fa-book-open sidebar-menu-item-icon2"></i>
                     Bee Guide
                 </a>
             </li>
             <li class="sidebar-menu-item2 active">
-                <a href="#">
+                <a href="add_worker.php">
                     <i class="fa-solid fa-user sidebar-menu-item-icon2"></i>
                     Worker
                 </a>
             </li>
             <li class="sidebar-menu-item2">
-                <a href="#">
+                <a href="about.php">
                     <i class="fa-solid fa-circle-info sidebar-menu-item-icon2"></i>
                     About
                 </a>

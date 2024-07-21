@@ -277,10 +277,13 @@ main {
 }
 
 .temp-degree{
-  padding-right: 37px; 
-  font-size: 20px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 500;
   color: green;
+}
+.temp-degree-text{
+  font-size: 16px;
+  font-weight: 500;
 }
 .humid, .humid-based{
   font-size: 13px;
@@ -290,10 +293,14 @@ main {
   font-weight: 700;
 }
 .humid-percent{
-  padding-right: 37px; 
+  padding-right: 37px;
   font-size: 17px;
-  font-weight: 700;
+  font-weight: 500;
   color: green;
+}
+.humid-percent-text{
+  font-size: 16px;
+  font-weight: 500;
 }
 .weight{
   padding-right: 80px;

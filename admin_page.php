@@ -1,3 +1,13 @@
+<?php
+session_start(); // Initialize session at the beginning of the file
+
+// Check if the admin is logged in
+if (!isset($_SESSION['adminID'])) {
+    header('Location: index.php'); // Redirect to login page if not logged in
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,17 +25,17 @@
     <div id="sidebar" class="sidebar position-fixed top-0 bottom-0 bg-white border-end offcanvass">
 
         <div class="d-flex align-items-center p-3 py-5">
-            <a href="#" class="sidebar-logo fw-bold text-dark text-decoration-none fs-4"><img src="img/BeeMo Logo Side.png" width="173px" height="75px" alt="BeeMo Logo"></a>
+            <a href="admin_page.php" class="sidebar-logo fw-bold text-dark text-decoration-none fs-4"><img src="img/BeeMo Logo Side.png" width="173px" height="75px" alt="BeeMo Logo"></a>
         </div>
         <ul class="sidebar-menu p-3 py-1 m-0 mb-0">
             <li class="sidebar-menu-item active">
-                <a href="#">
+                <a href="admin_page.php">
                     <i class="fa-solid fa-house sidebar-menu-item-icon"></i>
                     Home
                 </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="choosehive.html">
+                <a href="choose_hive.php">
                     <i class="fa-solid fa-temperature-three-quarters sidebar-menu-item-icon"></i>
                     Parameters Monitoring
                 </a>
@@ -37,25 +47,25 @@
                 </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="harvestcycle.html">
+                <a href="harvest_cycle.php">
                     <i class="fa-solid fa-arrows-spin sidebar-menu-item-icon"></i>
                     Harvest Cycle
                 </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="beeguide.html">
+                <a href="beeguide.php">
                     <i class="fa-solid fa-book-open sidebar-menu-item-icon"></i>
                     Bee Guide
                 </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="worker.html">
+                <a href="add_worker.php">
                     <i class="fa-solid fa-user sidebar-menu-item-icon"></i>
                     Worker
                 </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="#">
+                <a href="about.php">
                     <i class="fa-solid fa-circle-info sidebar-menu-item-icon"></i>
                     About
                 </a>
@@ -126,13 +136,13 @@
         </div>
         <ul class="sidebar-menu p-2 py-2 m-0 mb-0">
             <li class="sidebar-menu-item2 active">
-                <a href="#">
+                <a href="admin_page.php">
                     <i class="fa-solid fa-house sidebar-menu-item-icon2"></i>
                     Home
                 </a>
             </li>
             <li class="sidebar-menu-item2 py-1">
-                <a href="choosehive.html">
+                <a href="choose_hive.php">
                     <i class="fa-solid fa-temperature-three-quarters sidebar-menu-item-icon2"></i>
                     Parameters Monitoring
                 </a>
@@ -144,25 +154,25 @@
                 </a>
             </li>
             <li class="sidebar-menu-item2">
-                <a href="harvestcycle.html">
+                <a href="harvest_cycle.php">
                     <i class="fa-solid fa-arrows-spin sidebar-menu-item-icon2"></i>
                     Harvest Cycle
                 </a>
             </li>
             <li class="sidebar-menu-item2">
-                <a href="beeguide.html">
+                <a href="beeguide.php">
                     <i class="fa-solid fa-book-open sidebar-menu-item-icon2"></i>
                     Bee Guide
                 </a>
             </li>
             <li class="sidebar-menu-item2">
-                <a href="worker.html">
+                <a href="add_worker.worker">
                     <i class="fa-solid fa-user sidebar-menu-item-icon2"></i>
                     Worker
                 </a>
             </li>
             <li class="sidebar-menu-item2">
-                <a href="#">
+                <a href="about.php">
                     <i class="fa-solid fa-circle-info sidebar-menu-item-icon2"></i>
                     About
                 </a>

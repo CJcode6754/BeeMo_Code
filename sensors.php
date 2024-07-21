@@ -3,7 +3,7 @@
 $hostname = "localhost";
 $username = "root";
 $password = "appleslice_pass789432";
-$database = "sensors_db";
+$database = "BeeMo_db";
 
 $conn = mysqli_connect($hostname, $username, $password, $database);
 

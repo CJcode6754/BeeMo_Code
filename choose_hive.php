@@ -18,13 +18,13 @@
         </div>
         <ul class="sidebar-menu p-3 py-1 m-0 mb-0">
             <li class="sidebar-menu-item">
-                <a href="home.html">
+                <a href="admin_page.php">
                     <i class="fa-solid fa-house sidebar-menu-item-icon"></i>
                     Home
                 </a>
             </li>
             <li class="sidebar-menu-item active">
-                <a href="#">
+                <a href="choose_hive.php">
                     <i class="fa-solid fa-temperature-three-quarters sidebar-menu-item-icon"></i>
                     Parameters Monitoring
                 </a>
@@ -36,25 +36,25 @@
                 </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="harvestcycle.html">
+                <a href="harvest_cycle.php">
                     <i class="fa-solid fa-arrows-spin sidebar-menu-item-icon"></i>
                     Harvest Cycle
                 </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="beeguide.html">
+                <a href="beeguide.php">
                     <i class="fa-solid fa-book-open sidebar-menu-item-icon"></i>
                     Bee Guide
                 </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="worker.html">
+                <a href="add_worker.php">
                     <i class="fa-solid fa-user sidebar-menu-item-icon"></i>
                     Worker
                 </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="#">
+                <a href="about.php">
                     <i class="fa-solid fa-circle-info sidebar-menu-item-icon"></i>
                     About
                 </a>
@@ -133,13 +133,13 @@
         </div>
         <ul class="sidebar-menu p-2 py-2 m-0 mb-0">
             <li class="sidebar-menu-item2">
-                <a href="home.html">
+                <a href="admin_page.php">
                     <i class="fa-solid fa-house sidebar-menu-item-icon2"></i>
                     Home
                 </a>
             </li>
             <li class="sidebar-menu-item2 active">
-                <a href="#">
+                <a href="choose_hive.php">
                     <i class="fa-solid fa-temperature-three-quarters sidebar-menu-item-icon2"></i>
                     Parameters Monitoring
                 </a>
@@ -151,25 +151,25 @@
                 </a>
             </li>
             <li class="sidebar-menu-item2">
-                <a href="harvestcycle.html">
+                <a href="harvest_cycle.php">
                     <i class="fa-solid fa-arrows-spin sidebar-menu-item-icon2"></i>
                     Harvest Cycle
                 </a>
             </li>
             <li class="sidebar-menu-item2 ">
-                <a href="beeguide.html">
+                <a href="beeguide.php">
                     <i class="fa-solid fa-book-open sidebar-menu-item-icon2"></i>
                     Bee Guide
                 </a>
             </li>
             <li class="sidebar-menu-item2">
-                <a href="worker.html">
+                <a href="add_worker.php">
                     <i class="fa-solid fa-user sidebar-menu-item-icon2"></i>
                     Worker
                 </a>
             </li>
             <li class="sidebar-menu-item2">
-                <a href="#">
+                <a href="about.php">
                     <i class="fa-solid fa-circle-info sidebar-menu-item-icon2"></i>
                     About
                 </a>

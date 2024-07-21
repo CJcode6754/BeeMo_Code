@@ -12,22 +12,6 @@ if (isset($_POST['submit'])) {
     // Sanitize and validate email
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
 
-    if(empty($_POST['email'])){
-        $_SESSION['error'] = 'Please enter your email address.';
-        header('Location: index.php');
-        exit;
-    }
-    else if(empty($_POST['password'])){
-        $_SESSION['error'] = 'Please enter your password.';
-        header('Location: index.php');
-        exit;
-    }
-    else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $_SESSION['error'] = 'Invalid email format';
-        header('Location: index.php');
-        exit();
-    }
-
     $email = mysqli_real_escape_string($conn, $email);
     $password = $_POST['password'];
 
@@ -35,11 +19,14 @@ if (isset($_POST['submit'])) {
     $select_admin = "SELECT * FROM admin_table WHERE email = '$email'";
     $result_admin = mysqli_query($conn, $select_admin);
 
+    $select_adminID = "SELECT * FROM admin_table WHERE adminID ='$adminID'";
+    $result_select_adminID =mysqli_query($conn, $select_adminID);
     if (mysqli_num_rows($result_admin) > 0) {
         $row = mysqli_fetch_array($result_admin);
         // Verify the password
         if (password_verify($password, $row['password'])) {
-            $_SESSION['email'] = $row['email'];
+            // $_SESSION['email'] = $row['email'];
+            $_SESSION['adminID'] = $row['adminID'];
             header('Location: admin_page.php');
             exit(); // Ensure no further code is executed after redirection
         } else {

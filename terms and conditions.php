@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BeeMo</title>
+    <title>Terms and Conditions</title>
     <link rel="stylesheet" href="terms and conditions.css">
     <link rel="icon" href="img/beemo-ico.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -46,9 +46,7 @@
                             </p>
                         </div>
                             <div class="mt-4">
-                                <button class="terms-button px-4 py-1 rounded-5" type="button">
-                                    <i class="fa-solid fa-chevron-left"></i>
-                                </button>
+                                <a href="signup_form.php"><button name="back" class="terms-button px-4 py-1 rounded-5" type="button"><i class="fa-solid fa-chevron-left"></i></button></a>
                             </div>
                         </div>
                     </div>

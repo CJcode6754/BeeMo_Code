@@ -70,48 +70,48 @@ if (isset($_POST['submit'])) {
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
-    if(empty($_POST['admin_name'])){
-      $_SESSION['error'] = 'Please enter your full name.';
-      header('Location: signup_form.php');
-      exit;
-    }
-    else if(empty($_POST['email'])){
-      $_SESSION['error'] = 'Please enter your email address.';
-      header('Location: signup_form.php');
-      exit;
-    }
-    else if(empty($_POST['number'])){
-      $_SESSION['error'] = 'Please enter your mobile number.';
-      header('Location: signup_form.php');
-      exit;
-    }
-    else if(empty($_POST['password'])){
-      $_SESSION['error'] = 'Please enter your password.';
-      header('Location: signup_form.php');
-      exit;
-    }
-    else if(empty($_POST['confirm_password'])){
-      $_SESSION['error'] = 'Please reenter your password.';
-      header('Location: signup_form.php');
-      exit;
-    }
+    // if(empty($_POST['admin_name'])){
+    //   $_SESSION['error'] = 'Please enter your full name.';
+    //   header('Location: signup_form.php');
+    //   exit;
+    // }
+    // else if(empty($_POST['email'])){
+    //   $_SESSION['error'] = 'Please enter your email address.';
+    //   header('Location: signup_form.php');
+    //   exit;
+    // }
+    // else if(empty($_POST['number'])){
+    //   $_SESSION['error'] = 'Please enter your mobile number.';
+    //   header('Location: signup_form.php');
+    //   exit;
+    // }
+    // else if(empty($_POST['password'])){
+    //   $_SESSION['error'] = 'Please enter your password.';
+    //   header('Location: signup_form.php');
+    //   exit;
+    // }
+    // else if(empty($_POST['confirm_password'])){
+    //   $_SESSION['error'] = 'Please reenter your password.';
+    //   header('Location: signup_form.php');
+    //   exit;
+    // }
 
-    else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $_SESSION['error'] = 'Invalid email format';
-        header('Location: signup_form.php');
-        exit;
-    }
+    // else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    //     $_SESSION['error'] = 'Invalid email format';
+    //     header('Location: signup_form.php');
+    //     exit;
+    // }
 
-    else if(empty($_POST['check'])){
-      $_SESSION['error'] = 'Please accept BeeMos terms and conditions.';
-        header('Location: signup_form.php');
-        exit;
-    }
-    else if ($password !== $confirm_password) {
-        $_SESSION['error'] = 'Passwords do not match';
-        header('Location: signup_form.php');
-        exit;
-    }
+    // else if(empty($_POST['check'])){
+    //   $_SESSION['error'] = 'Please accept BeeMos terms and conditions.';
+    //     header('Location: signup_form.php');
+    //     exit;
+    // }
+    // else if ($password !== $confirm_password) {
+    //     $_SESSION['error'] = 'Passwords do not match';
+    //     header('Location: signup_form.php');
+    //     exit;
+    // }
 
     $password_hashed = password_hash($password, PASSWORD_BCRYPT);
 
@@ -176,8 +176,6 @@ if (isset($_POST['submit'])) {
 </head>
 
 <body>
-
-
     <!-- Contents -->
     <div id="contents">
         <div class="container-fluid h-100">
@@ -187,7 +185,7 @@ if (isset($_POST['submit'])) {
                       <main class="form-signin px4">
                         <form action="signup_form.php" method="post" id="registerForm" novalidate>
                           <div class="top px-2 pt-4">
-                            <a href="index.html"><img id="loginLogo" src="img/LOGO2.png" alt="Logo"></a>
+                            <a href="signup_form.php"><img id="loginLogo" src="img/LOGO2.png" alt="Logo"></a>
                             <p class="about pt-1">ABOUT&nbsp;US</p>
                           </div>
                           <hr class="d-block d-lg-none w-100">
@@ -234,7 +232,7 @@ if (isset($_POST['submit'])) {
                             <div class="terms form-check text-start my-3">
                               <input name="check" class="form-check-input" style="background-color: #6DA4AA;" type="checkbox" value="remember-me" id="termsCheckbox" required>
                               <label class="form-check-label" for="termsCheckbox">
-                                <p>I have read & accept the <u>Terms and Conditions</u></p>
+                                <p>I have read & accept the <a href="terms and conditions.php"><u>Terms and Conditions</u></a></p>
                               </label>
                               <div class="invalid-feedback">You must accept the terms and conditions</div>
                             </div>

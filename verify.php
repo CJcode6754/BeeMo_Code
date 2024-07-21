@@ -112,7 +112,6 @@
                 mysqli_query($conn, $update);
 
                 // Redirect to index.php upon successful verification
-                $_SESSION['status'] = "Account Verified Successfully!";
                 header('Location: index.php');
                 exit;
             } else {
@@ -181,7 +180,6 @@
                                 <p class="about pt-1">ABOUT&nbsp;US</p>
                               </div>
                               <hr class="d-block d-lg-none">
-
                               <div class="px-2">
                                 <h1 class="text">Verify</h1>
                                 <p class="fs-4 pb-5">Your code was sent to you via email</p>
@@ -194,12 +192,11 @@
                                         unset($_SESSION['status']);
                                     }
                                 ?>
-                                <br>
                                 <label for="otp">Enter OTP</label>
                                 <div class="form-group d-flex align-items-center position-relative">
 
                                 <input type="text" name="otp" id="otp" class="form-control">
-                                <div id="countdownTimer" class="position-absolute end-0 pe-2"><span id="countdownTimer"></span></div> <!-- Timer --></div>          
+                                <div id="countdownTimer" style="color:red" class="position-absolute end-0 pe-2"><span id="countdownTimer"></span></div> <!-- Timer --></div>          
                                 <button name="resend" class="mt-2 border-0 bg-white" type="submit">Resend Email</button>
                                 <button id="btn" name="submit" class="w-100 py-3" type="submit"><b>VERIFY</b></button>
 

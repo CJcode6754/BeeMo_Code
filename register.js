@@ -12,6 +12,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const termsCheckbox = document.getElementById('termsCheckbox');
     const btn = document.getElementById('btn');
 
+    let fullNameTouched = false;
+    let emailTouched = false;
+    let mobileNumberTouched = false;
+    let passwordTouched = false;
+    let confirmPasswordTouched = false;
+    let termsTouched = false;
+
     const toggleVisibility = (field, toggle) => {
         const type = field.getAttribute('type') === 'password' ? 'text' : 'password';
         field.setAttribute('type', type);
@@ -29,7 +36,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const validateFullName = () => {
         if (!fullNameInput.checkValidity()) {
-            fullNameInput.classList.add('is-invalid');
+            if (fullNameTouched) {
+                fullNameInput.classList.add('is-invalid');
+            }
         } else {
             fullNameInput.classList.remove('is-invalid');
         }
@@ -37,7 +46,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const validateEmail = () => {
         if (!emailInput.checkValidity()) {
-            emailInput.classList.add('is-invalid');
+            if (emailTouched) {
+                emailInput.classList.add('is-invalid');
+            }
         } else {
             emailInput.classList.remove('is-invalid');
         }
@@ -46,7 +57,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const validateMobileNumber = () => {
         const mobileNumberPattern = /^[0-9]{10,15}$/; // Adjust this pattern as needed
         if (!mobileNumberPattern.test(mobileNumberInput.value)) {
-            mobileNumberInput.classList.add('is-invalid');
+            if (mobileNumberTouched) {
+                mobileNumberInput.classList.add('is-invalid');
+            }
         } else {
             mobileNumberInput.classList.remove('is-invalid');
         }
@@ -55,7 +68,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const validatePassword = () => {
         const passwordValue = passwordInput.value.trim();
         if (passwordValue.length < 8 || passwordValue.length > 32) {
-            passwordInput.classList.add('is-invalid');
+            if (passwordTouched) {
+                passwordInput.classList.add('is-invalid');
+            }
         } else {
             passwordInput.classList.remove('is-invalid');
         }
@@ -63,7 +78,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const validateConfirmPassword = () => {
         if (passwordInput.value !== confirmPasswordInput.value || !confirmPasswordInput.checkValidity()) {
-            confirmPasswordInput.classList.add('is-invalid');
+            if (confirmPasswordTouched) {
+                confirmPasswordInput.classList.add('is-invalid');
+            }
         } else {
             confirmPasswordInput.classList.remove('is-invalid');
         }
@@ -71,7 +88,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const validateTermsCheckbox = () => {
         if (!termsCheckbox.checked) {
-            termsCheckbox.classList.add('is-invalid');
+            if (termsTouched) {
+                termsCheckbox.classList.add('is-invalid');
+            }
         } else {
             termsCheckbox.classList.remove('is-invalid');
         }
@@ -85,15 +104,45 @@ document.addEventListener('DOMContentLoaded', function() {
         validateConfirmPassword();
         validateTermsCheckbox();
 
-        // Log validity check for debugging
-        console.log('Form validity:', registerForm.checkValidity());
         // Enable or disable button based on form validity
+        if (registerForm.checkValidity() && termsCheckbox.checked) {
+            btn.disabled = false;
+        } else {
+            btn.disabled = true;
+        }
     };
+
     // Add input event listeners for individual validation functions
-    fullNameInput.addEventListener('input', validateFullName);
-    emailInput.addEventListener('input', validateEmail);
-    mobileNumberInput.addEventListener('input', validateMobileNumber);
-    passwordInput.addEventListener('input', validatePassword);
-    confirmPasswordInput.addEventListener('input', validateConfirmPassword);
-    termsCheckbox.addEventListener('change', validateTermsCheckbox);
+    fullNameInput.addEventListener('input', () => {
+        fullNameTouched = true;
+        validateForm();
+    });
+
+    emailInput.addEventListener('input', () => {
+        emailTouched = true;
+        validateForm();
+    });
+
+    mobileNumberInput.addEventListener('input', () => {
+        mobileNumberTouched = true;
+        validateForm();
+    });
+
+    passwordInput.addEventListener('input', () => {
+        passwordTouched = true;
+        validateForm();
+    });
+
+    confirmPasswordInput.addEventListener('input', () => {
+        confirmPasswordTouched = true;
+        validateForm();
+    });
+
+    termsCheckbox.addEventListener('change', () => {
+        termsTouched = true;
+        validateForm();
+    });
+
+    // Initial form validation on page load
+    validateForm();
 });
