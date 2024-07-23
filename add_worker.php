@@ -12,20 +12,71 @@ if (!isset($_SESSION['adminID'])) {
     exit;
 }
 
+// Set timezone to Philippines
+date_default_timezone_set('Asia/Manila');
+
+// Include PHPMailer and configure SMTP settings
+require 'C:/xampp/htdocs/BeeMo_Code/vendor/phpmailer/phpmailer/src/Exception.php';
+require 'C:/xampp/htdocs/BeeMo_Code/vendor/phpmailer/phpmailer/src/PHPMailer.php';
+require 'C:/xampp/htdocs/BeeMo_Code/vendor/phpmailer/phpmailer/src/SMTP.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+// Function to send email with OTP
+function sendOTP_user($email, $otp, $name) {
+    $mail = new PHPMailer(true);
+
+    try {
+        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = 'ceejayibabiosa@gmail.com';
+        $mail->Password   = 'jqic mish bckr efjm'; // Note: for security, consider storing the password securely
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port       = 465;
+
+        $mail->setFrom('ceejayibabiosa@gmail.com', 'BeeMo');
+        $mail->addAddress($email, $name);
+
+        $mail->isHTML(true);
+        $mail->Subject = 'Verify your email';
+        $mail->Body    = "Hello, {$name}<br>Your account registration is successfully done! Now activate your account with OTP {$otp}.";
+
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        return false;
+    }
+}
+
+// Function to generate OTP and set expiry time
+function generateOTP_user($email) {
+    global $conn; // Access the global connection object
+
+    $otp = rand(100000, 999999); // Generate random OTP
+    $otp_expiry = date('Y-m-d H:i:s', strtotime('+3 minutes')); // Set OTP expiry time (3 minutes from now)
+
+    // Update user_table with new OTP and expiry time
+    $update_user = "UPDATE user_table SET otp='$otp', otp_expiry='$otp_expiry' WHERE email='$email'";
+    mysqli_query($conn, $update_user);
+
+    $_SESSION['otp_expiry'] = $otp_expiry; // Update session with OTP expiry time
+
+    return array('otp' => $otp, 'otp_expiry' => $otp_expiry); // Return OTP and expiry time as an array
+}
+
+// Handle the submission of OTP
 if (isset($_POST['submit'])) {
     $name = filter_var($_POST['user_name'], FILTER_SANITIZE_SPECIAL_CHARS);
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $number = filter_var($_POST['number'], FILTER_SANITIZE_SPECIAL_CHARS);
     $password = $_POST['password'];
     $password_hash = password_hash($password, PASSWORD_BCRYPT);
-
-    if (isset($_SESSION['adminID'])) {
-        $adminID = $_SESSION['adminID'];
-    } else {
-        $_SESSION['error'] = 'Admin ID not found';
-        header('Location: add_worker.php');
-        exit;
-    }
+    $adminID = $_SESSION['adminID'];
 
     // Check if email already exists
     $check_email = "SELECT * FROM user_table WHERE email = '$email'";
@@ -37,21 +88,55 @@ if (isset($_POST['submit'])) {
         exit;
     }
 
-    $insert_user = "INSERT INTO user_table (user_name, email, number, password, adminID) VALUES ('$name', '$email', '$number', '$password_hash', '$adminID')";
+    // Generate OTP and set OTP expiry
+    $otpData = generateOTP_user($email);
+    $otp = $otpData['otp'];
+    $otp_expiry = $otpData['otp_expiry'];
+
+    $insert_user = "INSERT INTO user_table (user_name, email, number, password, adminID, otp, is_verified, otp_expiry) VALUES ('$name', '$email', '$number', '$password_hash', '$adminID', '$otp', 0, '$otp_expiry')";
     $insert_user_run = mysqli_query($conn, $insert_user);
 
     if ($insert_user_run) {
-        header('Location: add_worker.php');
+       // Send email with OTP
+       if (sendOTP_user($email, $otp, $name)) {
+        $_SESSION['status'] = 'Registration Successful. Verify your Email Address with the OTP sent.';
+        $_SESSION['email'] = $email;
+        $_SESSION['user_name'] = $name; // Store user_name in session for resending OTP
+        $_SESSION['adminID'] = $adminID;
+        header('Location: verify_worker.php');
         exit;
+        } else {
+            $_SESSION['error'] = 'Failed to send OTP. Please try again later.';
+            header('Location: add_worker.php');
+            exit;
+        }
     } else {
         $_SESSION['error'] = 'Error: ' . mysqli_error($conn);
         header('Location: add_worker.php');
         exit;
     }
 }
+
+//DELETE USER
+if(isset($_POST['btn_delete'])){
+    $user_ID = $_POST['user_ID'];
+    $adminID = $_SESSION['adminID'];
+    $delete_user = "DELETE FROM user_table WHERE user_ID = '$user_ID' AND adminID = '$adminID'";
+    $delete_query = mysqli_query($conn, $delete_user);
+
+    if($delete_query){
+        $_SESSION['status'] = 'Successfully deleted';
+        header('Location: add_worker.php');
+        exit;
+    }else{
+        $_SESSION['error'] = 'Failed to deleted';
+        header('Location: add_worker.php');
+        exit;
+    }
+    header('Location: index.php');
+    exit;
+}
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -174,7 +259,8 @@ if (isset($_POST['submit'])) {
                             </thead>
                             <tbody id="workerTableBody">
                             <?php
-                                $worker_list = "SELECT user_name, email, number,  password FROM user_table";
+                                $adminID = $_SESSION['adminID'];
+                                $worker_list = "SELECT user_ID, user_name, email, number, password FROM user_table WHERE adminID = '$adminID'";
                                 $list_query = mysqli_query($conn, $worker_list);
                                 while($row = $list_query ->fetch_assoc()){
                                     echo "
@@ -183,8 +269,13 @@ if (isset($_POST['submit'])) {
                                         <td>". $row['email'] ."</td>
                                         <td>". $row['number'] ."</td>
                                         <td>". $row['password'] ." </td>
-                                        <td><button class='btn edit-btn'><i class='fa-regular fa-pen-to-square'></i></button></td>
-                                        <td><button class='btn delete-btn'><i class='fa-regular fa-trash-can' style='color: red;'></i></button></td>
+                                        <td><button name='btn_edit' class='btn edit-btn'><i class='fa-regular fa-pen-to-square'></i></button></td>
+                                        <td>
+                                        <form method='post' action='add_worker.php'>
+	                                        <input type='hidden' name='user_ID' value='". $row['user_ID'] ."'>
+                                            <button type='submit' name='btn_delete' class='btn delete-btn'><i class='fa-regular fa-trash-can' style='color: red;'></i></button>
+                                        </form>
+                                        </td>
                                     </tr>
                                     ";
                                 }
@@ -212,26 +303,26 @@ if (isset($_POST['submit'])) {
                             <form action="add_worker.php" method="post" id="workerForm" novalidate>
                                 <div class="d-grid d-sm-flex justify-content-sm-center gap-4 mb-1">
                                     <div class="col-md-6">
-                                        <label for="fullName" class="form-label" style="font-size: 13px;">Full Name</label>
-                                        <input name="user_name" type="text" class="form-control rounded-3 py-2" style="border: 1.8px solid #2B2B2B; font-size: 13px;" id="fullName" required>
-                                        <div class="invalid-feedback">Please enter a full name.</div>
+                                        <label for="FullName" class="form-label" style="font-size: 13px;">Full Name</label>
+                                        <input name="user_name" type="text" class="form-control rounded-3 py-2" style="border: 1.8px solid #2B2B2B; font-size: 13px;" id="FullName" required>
+                                        <div class="invalid-feedback">Please enter your full name.</div>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                        <label for="email" class="form-label" style="font-size: 13px;">Email</label>
-                                        <input name="email" type="email" class="form-control rounded-3 py-2" style="border: 1.8px solid #2B2B2B; font-size: 13px;" id="email" required>
+                                        <label for="Email" class="form-label" style="font-size: 13px;">Email</label>
+                                        <input name="email" type="email" class="form-control rounded-3 py-2" style="border: 1.8px solid #2B2B2B; font-size: 13px;" id="Email" required>
                                         <div class="invalid-feedback">Please enter a valid email address.</div>
                                     </div>
                                 </div>
                                 <div class="d-grid mt-3 d-sm-flex justify-content-sm-center gap-4">
                                     <div class="col-md-6">
-                                        <label for="phoneNumber" class="form-label" style="font-size: 13px;">Phone Number</label>
-                                        <input name="number" type="text" class="form-control rounded-3 py-2" style="border: 1.8px solid #2B2B2B; font-size: 13px;" id="phoneNumber" required>
-                                        <div class="invalid-feedback">Please enter a phone number.</div>
+                                        <label for="PhoneNumber" class="form-label" style="font-size: 13px;">Phone Number</label>
+                                        <input name="number" type="text" class="form-control rounded-3 py-2" style="border: 1.8px solid #2B2B2B; font-size: 13px;" id="PhoneNumber" required>
+                                        <div class="invalid-feedback">Please enter a valid mobile number.</div>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <label for="password" class="form-label" style="font-size: 13px;">Password</label>
-                                        <input name="password" type="password" class="form-control rounded-3 py-2" style="border: 1.8px solid #2B2B2B; font-size: 13px;" id="password" required>
-                                        <div class="invalid-feedback">Please enter a password.</div>
+                                        <label for="Password" class="form-label" style="font-size: 13px;">Password</label>
+                                        <input name="password" type="password" class="form-control rounded-3 py-2" style="border: 1.8px solid #2B2B2B; font-size: 13px;" id="Password" required>
+                                        <div class="invalid-feedback">Password must be 8-32 characters long.</div>
                                     </div>
                                 </div>
                                 <div class="mt-5 d-flex justify-content-center">

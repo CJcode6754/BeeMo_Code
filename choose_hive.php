@@ -1,10 +1,19 @@
+<?php
+    // Enable error reporting for debugging
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+
+    session_start(); // Start the session
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BeeMo</title>
-    <link rel="stylesheet" href="choosehive.css">
+    <link rel="stylesheet" href="choose_hive.css">
     <link rel="icon" href="img/beemo-ico.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/b4ce5ff90a.js" crossorigin="anonymous"></script>
@@ -106,7 +115,7 @@
                     <div class="col-lg-6 mx-auto">
                         <p class="choosehive-text fs-4 mb-5 fw-bold choosehive-highlight">Choose Hive</p>
                         <div class=" mt-4 gap-2 d-block justify-content-sm-center">
-                            <a href="parametersmonitoring.html"><button type="button" class="hive-button mt-4 px-5 fs-5 fw-semibold">
+                            <a href="parameter_monitoring.php"><button type="button" class="hive-button mt-4 px-5 fs-5 fw-semibold">
                                 Hive 1</button></a>
                             <button type="button" class="hive-button mt-5 px-5 fs-5 fw-semibold">
                                 Hive 2</button>

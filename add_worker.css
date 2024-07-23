@@ -304,7 +304,7 @@ td, th{
     box-shadow: 0 5px #2B2B2B;
   }
 
-  #fullName, #email, #phoneNumber, #password{
+  #FullName, #Email, #PhoneNumber, #Password{
     background-color: #F3F8FF;
   }
   input.is-invalid,

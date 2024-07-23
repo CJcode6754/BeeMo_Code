@@ -11,7 +11,6 @@ include 'C:/xampp/htdocs/BeeMo_Code/connection/mysql_connection.php';
 if (isset($_POST['submit'])) {
     // Sanitize and validate email
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-
     $email = mysqli_real_escape_string($conn, $email);
     $password = $_POST['password'];
 
@@ -19,16 +18,30 @@ if (isset($_POST['submit'])) {
     $select_admin = "SELECT * FROM admin_table WHERE email = '$email'";
     $result_admin = mysqli_query($conn, $select_admin);
 
-    $select_adminID = "SELECT * FROM admin_table WHERE adminID ='$adminID'";
-    $result_select_adminID =mysqli_query($conn, $select_adminID);
+    // Check if the email exists in the user_table
+    $select_user = "SELECT * FROM user_table WHERE email = '$email'";
+    $result_user = mysqli_query($conn, $select_user);
+
     if (mysqli_num_rows($result_admin) > 0) {
         $row = mysqli_fetch_array($result_admin);
         // Verify the password
         if (password_verify($password, $row['password'])) {
-            // $_SESSION['email'] = $row['email'];
+            $_SESSION['email'] = $row['email'];
             $_SESSION['adminID'] = $row['adminID'];
             header('Location: admin_page.php');
-            exit(); // Ensure no further code is executed after redirection
+            exit();
+        } else {
+            $_SESSION['error'] = 'Incorrect email or password';
+        }
+    }
+    if (mysqli_num_rows($result_user) > 0) {
+        $row = mysqli_fetch_array($result_user);
+        // Verify the password
+        if (password_verify($password, $row['password'])) {
+            $_SESSION['email'] = $row['email'];
+            $_SESSION['user_ID'] = $row['user_ID'];
+            header('Location: user_page.php');
+            exit();
         } else {
             $_SESSION['error'] = 'Incorrect email or password';
         }
@@ -37,9 +50,10 @@ if (isset($_POST['submit'])) {
     }
 
     header('Location: index.php');
-    exit(); // Ensure no further code is executed after redirection
+    exit();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -130,5 +144,5 @@ if (isset($_POST['submit'])) {
 
 <!-- JQuery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
-<script src="JQ.js" type="text/javascript"></script>
+<script src="script.js" type="text/javascript"></script>
 </html>

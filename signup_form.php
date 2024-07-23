@@ -70,49 +70,6 @@ if (isset($_POST['submit'])) {
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
-    // if(empty($_POST['admin_name'])){
-    //   $_SESSION['error'] = 'Please enter your full name.';
-    //   header('Location: signup_form.php');
-    //   exit;
-    // }
-    // else if(empty($_POST['email'])){
-    //   $_SESSION['error'] = 'Please enter your email address.';
-    //   header('Location: signup_form.php');
-    //   exit;
-    // }
-    // else if(empty($_POST['number'])){
-    //   $_SESSION['error'] = 'Please enter your mobile number.';
-    //   header('Location: signup_form.php');
-    //   exit;
-    // }
-    // else if(empty($_POST['password'])){
-    //   $_SESSION['error'] = 'Please enter your password.';
-    //   header('Location: signup_form.php');
-    //   exit;
-    // }
-    // else if(empty($_POST['confirm_password'])){
-    //   $_SESSION['error'] = 'Please reenter your password.';
-    //   header('Location: signup_form.php');
-    //   exit;
-    // }
-
-    // else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    //     $_SESSION['error'] = 'Invalid email format';
-    //     header('Location: signup_form.php');
-    //     exit;
-    // }
-
-    // else if(empty($_POST['check'])){
-    //   $_SESSION['error'] = 'Please accept BeeMos terms and conditions.';
-    //     header('Location: signup_form.php');
-    //     exit;
-    // }
-    // else if ($password !== $confirm_password) {
-    //     $_SESSION['error'] = 'Passwords do not match';
-    //     header('Location: signup_form.php');
-    //     exit;
-    // }
-
     $password_hashed = password_hash($password, PASSWORD_BCRYPT);
 
     // Check if the email already exists
@@ -254,5 +211,5 @@ if (isset($_POST['submit'])) {
 </body>
 <!-- JQuery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
-<script src="register.js" type="text/javascript"></script>
+<script src="script.js" type="text/javascript"></script>
 </html>
