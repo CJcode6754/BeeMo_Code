@@ -96,7 +96,7 @@ if (isset($_POST['submit'])) {
 
                                 <div class="reg pb-3">
                                   <p><b>Don't have an account?</p>
-                                  <a href="signup_form.html" class="text-dark"><u>Register</u></a></b>
+                                  <a href="signup_form.php" class="text-dark"><u>Register</u></a></b>
                                 </div>
                                 <?php
                                     if (isset($_SESSION['error'])) {

@@ -431,7 +431,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-// <-- Reset Password --> Di pa tapos
+// <-- Reset Password -->
 document.addEventListener('DOMContentLoaded', function() {
     const resetPwForm = document.getElementById('ResetpwForm');
     const passwordInput = document.getElementById('floatingPassword2');

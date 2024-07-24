@@ -101,7 +101,7 @@
                                     <div class="d-block">
                                         <p class="fw-bold">Temperature</p>
                                         <p>Based: 34 °C</p>
-                                        <p class="temp-degree-text">Temperature: <span class="temp-degree"><?php echo htmlspecialchars($data['temperature']); ?>%</span></p>
+                                        <p class="temp-degree-text">Temperature: <span class="temp-degree"><?php echo htmlspecialchars($data['temperature']); ?> °C</span></p>
                                     </div>
                                     <i class="fa-solid fa-temperature-low align-content-center" style="font-size: 40px;"></i>
                                 </div>
