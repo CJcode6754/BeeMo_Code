@@ -89,7 +89,7 @@
     <main class="bg-light">
         <div class="p-2">
             <div class="monitoring-page py-4 mt-4 border border-2 rounded-4 border-dark">
-                <div class="px-4 py-2 my-4 text-center">
+                <div class="px-4 py-2 my-4 text-center content-wrapper">
                     <p class="monitoring-text fs-4 mb-5 fw-bold monitoring-highlight">Hive 1</p>
                     <div class="d-flex justify-content-end">
                         <p class="auto-manual">Auto <i class="fa-solid fa-toggle-on toggle-button"></i></p>
@@ -100,7 +100,7 @@
                                 <div class="d-flex justify-content-between m-4">
                                     <div class="d-block">
                                         <p class="fw-bold">Temperature</p>
-                                        <p>Based: 34 °C</p>
+                                        <p>Based: 32 - 35 °C</p>
                                         <p class="temp-degree-text">Temperature: <span class="temp-degree"><?php echo htmlspecialchars($data['temperature']); ?> °C</span></p>
                                     </div>
                                     <i class="fa-solid fa-temperature-low align-content-center" style="font-size: 40px;"></i>
@@ -114,7 +114,7 @@
                                         <div class="d-flex justify-content-between m-3">
                                             <div class="d-block lh-1">
                                                 <p class="humid">Humidity</p>
-                                                <p class="humid-based">Based: 50%</p>
+                                                <p class="humid-based">Based: 50 - 60%</p>
                                                 <p class="humid-percent-text">Humidity: <span class="humid-percent"><?php echo htmlspecialchars($data['humidity']); ?>%</span></p>
                                             </div>
                                             <i class="fa-solid fa-droplet align-content-center" style="font-size: 25px;"></i>

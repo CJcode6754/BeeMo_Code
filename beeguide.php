@@ -102,7 +102,7 @@
             </nav>
             <!-- Content -->
             <div class="beeguide-page py-4 mt-4 border border-2 rounded-4 border-dark">
-                <div class="px-4 py-2 my-4 text-center">
+                <div class="px-4 py-2 my-4 text-center content-wrapper">
                     <div class="col-lg-6 mx-auto">
                         <p class="beeguide-text fs-4 mb-5 fw-bold beeguide-highlight">Bee Guide</p>
                         <div class="hardware mt-5 mx-auto d-flex align-items-center justify-content-start p-3" type="button" >

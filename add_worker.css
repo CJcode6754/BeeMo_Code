@@ -253,12 +253,24 @@ nav {
 main {
   min-height: 100vh;
 }
-
+.container-worker{
+  margin-left: 60px;
+  margin-right: 60px;
+}
 .worker-highlight{
     display: inline;
     background-color: #FEF9D9;
     padding: 0 5px;
     border-radius: 7px;
+}
+.worker-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 70vh;
+}
+.content-wrapper {
+  flex-grow: .5;
 }
 
 .table-responsive {
@@ -342,6 +354,10 @@ td, th{
       padding: 10px;
       margin: 10px;
       box-shadow: 7px 7px rgba(0, 0, 0, 0.25);
+  }
+  .container-worker{
+    margin-left: 0px;
+    margin-right: 0px;
   }
 
   .scrollable-table {

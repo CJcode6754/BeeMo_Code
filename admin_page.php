@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
 session_start(); // Initialize session at the beginning of the file
 
 // Check if the admin is logged in
@@ -6,7 +6,7 @@ if (!isset($_SESSION['adminID'])) {
     header('Location: index.php'); // Redirect to login page if not logged in
     exit;
 }
-?>
+?> -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -113,7 +113,7 @@ if (!isset($_SESSION['adminID'])) {
             </nav>
             <!-- Content -->
             <div class="home-page py-3 mt-4 border border-2 rounded-4 border-dark">
-                <div class="px-4 py-4 my-4 text-center">
+                <div class="px-4 py-4 my-4 text-center content-wrapper">
                     <img src="img/BeeMo Logo.png" class="img-responsive" alt="BeeMo Logo">
                     <div class="col-lg-6 mx-auto">
                         <p class="Beemo-text py-3 mb-5">BeeMo: An IoT-Enabled Web-Based Stingless Beehive Management System with Real-Time Temperature, Humidity, Weight Monitoring</p>

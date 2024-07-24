@@ -156,7 +156,7 @@ body{
   transition: background-color 0.5s ease;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 768px) { 
   .sidebar.collapsed {
       width: 4.75rem;
       left: 0;
@@ -253,12 +253,21 @@ nav {
 main {
   min-height: 100vh;
 }
+.choosehive-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 70vh;
+}
 
+.content-wrapper {
+  flex-grow: .5;
+}
 .choosehive-highlight{
     display: inline;
     background-color: #FEF9D9;
     padding: 0 5px;
-    border-radius: 7px;
+    border-radius: 7px; 
 }
 .hive-button{
     width: 100%;
@@ -271,12 +280,14 @@ main {
   }
   .hive-button:hover{
     background-color: #FAEF9B;
+    
   }
   .edit-icon{
     font-size: 13px;
     padding-right: 3px;
     color: #2B2B2B;
   }
+  
   .edit-button{
     background-color: #FCF4B9;
     font-size: 15px;
@@ -287,10 +298,11 @@ main {
     max-width: 100px;
     transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
   }
+  
   .edit-button:hover{
     background-color: #FAEF9B;
     box-shadow: 0 5px #2B2B2B;
-  }
+  }  
 
 /* --------------------------------------------End: Main Desktop View---------------------------------------------*/
 
@@ -305,10 +317,12 @@ main {
       padding-left: 22rem;
       padding-top: 2rem;
       padding-right: 4rem;
+        
     }
     .choosehive-page{
       box-shadow: 0 6px #2B2B2B;
     }
+  
     .sidebar.collapsed ~ main {
       padding-left: 4.75rem;
   }
@@ -316,28 +330,28 @@ main {
 
 @media (max-width: 767.98px) {
     .choosehive-page{
-        min-height: 74vh;
+        min-height: 74vh; 
         padding: 10px;
         margin: 10px;
-        box-shadow: 7px 7px rgba(0, 0, 0, 0.25);
+        box-shadow: 7px 7px rgba(0, 0, 0, 0.25);  
     }
 
     nav{
-        padding: 10px;
-        margin: 10px;
-        box-shadow: 7px 7px rgba(0, 0, 0, 0.25);
-        background-color: #FFFFFF;
+      padding: 10px;
+      margin: 10px;
+      box-shadow: 7px 7px rgba(0, 0, 0, 0.25);
+      
     }
     .navbar-link {
-      background-color: #ffffff;
+      
       box-shadow: 3px 3px rgba(0, 0, 0, 0.4);
     }
     .navbar-link:hover {
-      background-color: #ffffff;
       border-radius: 50%;
     }
+    
     .yellow {
-        min-height: 5vh;
+        min-height: 5vh;   
         background-color: #FAEF9B;
         overflow-y:auto;
     }
