@@ -2,7 +2,7 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
+//renz
 session_start();
 include('C:/xampp/htdocs/BeeMo_Code/connection/mysql_connection.php');
 
