@@ -269,7 +269,51 @@ if(isset($_POST['btn_delete'])){
                                         <td>". $row['email'] ."</td>
                                         <td>". $row['number'] ."</td>
                                         <td>". $row['password'] ." </td>
-                                        <td><button name='btn_edit' class='btn edit-btn'><i class='fa-regular fa-pen-to-square'></i></button></td>
+                                        <td>
+                                        <button name='btn_edit' class='btn edit-btn'><i class='fa-regular fa-pen-to-square data-bs-toggle='modal' data-bs-target = '#Edit_Worker''></i></button>
+                                        <div class='yellow mt-1 d-md-none fixed-bottom p-0 m-0'></div>
+                                            <div class='modal fade' id='Edit_Worker' tabindex='-1' aria-labelledby='Edit_WorkerLabel' aria-hidden='true'>
+                                                <div class='modal-dialog modal-lg modal-dialog-centered rounded-3' >
+                                                    <div class='modal-content' style='border: 2px solid #2B2B2B;'>
+                                                        <div class='modal-header border-dark border-2' style='background-color: #FCF4B9;'>
+                                                            <h5 class='modal-title fw-semibold mx-4' id='Edit_WorkerLabel'>Add Worker</h5>
+                                                            <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+                                                        </div>
+                                                        <div class='modal-body m-5'>
+                                                            <form action='add_worker.php' method='post' id='workerForm' novalidate>
+                                                                <div class='d-grid d-sm-flex justify-content-sm-center gap-4 mb-1'>
+                                                                    <div class='col-md-6'>
+                                                                        <label for='FullName' class='form-label' style='font-size: 13px;'>Full Name</label>
+                                                                        <input name='user_name' type='text' class='form-control rounded-3 py-2' style='border: 1.8px solid #2B2B2B; font-size: 13px;' id='FullName' required>
+                                                                        <div class='invalid-feedback'>Please enter your full name.</div>
+                                                                    </div>
+                                                                    <div class='mb-3 col-md-6'>
+                                                                        <label for='Email' class='form-label' style='font-size: 13px;'>Email</label>
+                                                                        <input name='email' type='email' class='form-control rounded-3 py-2' style='border: 1.8px solid #2B2B2B; font-size: 13px;' id='Email' required>
+                                                                        <div class='invalid-feedback'>Please enter a valid email address.</div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class='d-grid mt-3 d-sm-flex justify-content-sm-center gap-4'>
+                                                                    <div class='col-md-6'>
+                                                                        <label for='PhoneNumber' class='form-label' style='font-size: 13px;'>Phone Number</label>
+                                                                        <input name='number' type='text' class='form-control rounded-3 py-2' style='border: 1.8px solid #2B2B2B; font-size: 13px;' id='PhoneNumber' required>
+                                                                        <div class='invalid-feedback'>Please enter a valid mobile number.</div>
+                                                                    </div>
+                                                                    <div class='col-md-6 mb-2'>
+                                                                        <label for='Password' class='form-label' style='font-size: 13px;'>Password</label>
+                                                                        <input name='password' type='password' class='form-control rounded-3 py-2' style='border: 1.8px solid #2B2B2B; font-size: 13px;' id='Password' required>
+                                                                        <div class='invalid-feedback'>Password must be 8-32 characters long.</div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class='mt-5 d-flex justify-content-center'>
+                                                                    <button id='btn' name='submit' type='submit' class='save-button px-4 border border-1 border-black fw-semibold'><span class='fw-bold'>+</span> Add Worker</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
                                         <td>
                                         <form method='post' action='add_worker.php'>
 	                                        <input type='hidden' name='user_ID' value='". $row['user_ID'] ."'>
