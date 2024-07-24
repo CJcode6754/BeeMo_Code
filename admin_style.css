@@ -243,7 +243,6 @@ nav {
 main {
   min-height: 100vh;
 }
-
 .img-responsive {
   max-width: 100%;
   height: auto;
@@ -253,6 +252,22 @@ main {
 .Beemo-text {
   font-size: 1.4rem;
   font-weight: 400;
+}
+
+.home-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 70vh;
+}
+
+.content-wrapper {
+  flex-grow: .5;
+}
+
+.home-page img {
+  max-width: 100%;
+  height: auto;
 }
 
 /* --------------------------------------------End: Main Desktop View---------------------------------------------*/
@@ -268,7 +283,7 @@ main {
   }
   .home-page {
     box-shadow: 0 6px #2b2b2b;
-    background-image: linear-gradient(#f8f9fa 75%, #fcf4b9 25%);
+    background-image: linear-gradient(#f8f9fa 79%, #fcf4b9 21%);
   }
 
   .sidebar.collapsed ~ main {
@@ -287,18 +302,16 @@ main {
   .Beemo-text {
     font-size: 1.2rem !important;
   }
-  nav {
+   nav{
     padding: 10px;
     margin: 10px;
     box-shadow: 7px 7px rgba(0, 0, 0, 0.25);
-    background-color: #ffffff;
+    
   }
   .navbar-link {
-    background-color: #ffffff;
     box-shadow: 3px 3px rgba(0, 0, 0, 0.4);
   }
   .navbar-link:hover {
-    background-color: #ffffff;
     border-radius: 50%;
   }
 

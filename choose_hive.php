@@ -111,7 +111,7 @@
             </nav>
             <!-- Content -->
             <div class="choosehive-page py-4 mt-4 border border-2 rounded-4 border-dark">
-                <div class="px-4 py-2 my-4 text-center">
+                <div class="px-4 py-2 my-4 text-center content-wrapper">
                     <div class="col-lg-6 mx-auto">
                         <p class="choosehive-text fs-4 mb-5 fw-bold choosehive-highlight">Choose Hive</p>
                         <div class=" mt-4 gap-2 d-block justify-content-sm-center">

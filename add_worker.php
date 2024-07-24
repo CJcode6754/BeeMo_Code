@@ -243,8 +243,9 @@ if(isset($_POST['btn_delete'])){
             </nav>
             <!-- Content -->
             <div class="worker-page py-3 mt-4 border border-2 rounded-4 border-dark">
-                <div class="px-4 py-4 my-4 text-center">
-                    <p class="beeguide-text fs-4 mb-5 fw-bold worker-highlight">Workers</p>
+                <div class="px-4 py-4 my-4 text-center content-wrapper">
+                    <p class="fs-4 mb-5 fw-bold worker-highlight">Workers</p>
+                    <div class="container-worker">
                     <div class="table-responsive mt-5" style="max-height: 165px; overflow-y: auto;">
                         <table class="table worker-table border-dark" name = "worker_list">
                             <thead>
@@ -331,6 +332,7 @@ if(isset($_POST['btn_delete'])){
                         <button class="add-button px-4 border border-1 border-black  fw-semibold" type="button" data-bs-toggle="modal" data-bs-target="#addWorkerModal">
                         <span class="fw-bold">+ </span> Add Worker
                         </button>
+                    </div>
                     </div>
                 </div>
             </div>
