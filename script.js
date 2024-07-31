@@ -80,6 +80,87 @@ document.addEventListener('DOMContentLoaded', function() {
     }, false);
 });
 
+// <--EDIT WORKER-->
+document.addEventListener('DOMContentLoaded', function() {
+    const workerForm = document.getElementById('edit_workerForm');
+    const fullName = document.getElementById('Edit_FullName');
+    const email = document.getElementById('Edit_Email');
+    const phoneNumber = document.getElementById('Edit_PhoneNumber');
+    const password = document.getElementById('Edit_Password');
+    const submitButton = document.getElementById('Edit_btn');
+
+    const validateForm = () => {
+        const fullNameValid = fullName.checkValidity();
+        const emailValid = email.checkValidity();
+        const phoneNumberValid = /^[0-9]{10,15}$/.test(phoneNumber.value);
+        const passwordValid = password.value.trim().length >= 8 && password.value.trim().length <= 32;
+
+        if (fullNameValid && emailValid && phoneNumberValid && passwordValid) {
+            submitButton.disabled = false;
+        } else {
+            submitButton.disabled = true;
+        }
+    };
+
+    fullName.addEventListener('input', () => {
+        fullNameTouched = true;
+        if (fullName.checkValidity()) {
+            fullName.classList.remove('is-invalid');
+            fullName.classList.add('is-valid');
+        } else {
+            fullName.classList.remove('is-valid');
+            fullName.classList.add('is-invalid');
+        }
+        validateForm();
+    });
+
+    email.addEventListener('input', () => {
+        emailTouched = true;
+        if (email.checkValidity()) {
+            email.classList.remove('is-invalid');
+            email.classList.add('is-valid');
+        } else {
+            email.classList.remove('is-valid');
+            email.classList.add('is-invalid');
+        }
+        validateForm();
+    });
+
+    phoneNumber.addEventListener('input', () => {
+        phoneNumberTouched = true;
+        const mobileNumberPattern = /^[0-9]{11}$/; // Adjust this pattern as needed
+        if (!mobileNumberPattern.test(phoneNumber.value)) {
+            phoneNumber.classList.remove('is-valid');
+            phoneNumber.classList.add('is-invalid');
+        } else {
+            phoneNumber.classList.remove('is-invalid');
+            phoneNumber.classList.add('is-valid');
+        }
+        validateForm();
+    });
+
+    password.addEventListener('input', () => {
+        passwordTouched = true;
+        const passwordValue = password.value.trim();
+        if (passwordValue.length < 8 || passwordValue.length > 32) {
+            password.classList.remove('is-valid');
+            password.classList.add('is-invalid');
+        } else {
+            password.classList.remove('is-invalid');
+            password.classList.add('is-valid');
+        }
+        validateForm();
+    });
+
+    workerForm.addEventListener('submit', function(event) {
+        if (!workerForm.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        workerForm.classList.add('was-validated');
+    }, false);
+});
 
 // <--FORGOT PASSWORD JS-->
 document.addEventListener('DOMContentLoaded', function() {
@@ -398,7 +479,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-// <--Forgot Password
+// <--Forgot Password-->
 document.addEventListener('DOMContentLoaded', function() {
     const forgotForm = document.getElementById('forgotForm');
     const emailInput = document.getElementById('floatingInput1');
@@ -506,3 +587,116 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+
+//NOTIFICATION
+document.addEventListener('DOMContentLoaded', function() {
+    const notificationsContainer = document.getElementById('notifications');
+    const nfCountElement = document.getElementById('nf-count');
+    const nfCountBadgeElement = document.getElementById('nf-count-badge');
+    const nfBtn = document.getElementById('nf-btn');
+
+    function showNotification() {
+        fetch('notification.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({ action: 'fetch' })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Fetched Data:", data); // Log the fetched data for debugging
+
+            // Clear previous notifications
+            notificationsContainer.innerHTML = '';
+
+            // Check if the data array is not empty
+            if (data.length > 0) {
+                // Set the notification count
+                nfCountElement.textContent = data[0].total;
+                nfCountBadgeElement.textContent = data[0].total;
+
+                // Iterate over notifications
+                for (let i = 1; i < data.length; i++) {
+                    const noti = data[i];
+                    const noti_date = noti.noti_date;
+                    const noti_seen = noti.noti_seen;
+                    const noti_type = noti.noti_type;
+                    const noti_uniqueid = noti.noti_uniqueid;
+                    const noti_url = noti.noti_url;
+
+                    // Update message based on type
+                    let noti_message = 'No notifications'; // Default message
+                    switch (noti_type) {
+                        case 'add_user':
+                            noti_message = 'User was added successfully.';
+                            break;
+                        case 'delete_user':
+                            noti_message = 'User was deleted successfully.';
+                            break;
+                        case 'edit_user':
+                            noti_message = 'User was updated successfully.';
+                            break;
+                        default:
+                            noti_message = 'Notification';
+                            break;
+                    }
+
+                    // Set alert class based on notification status
+                    const alertClass = noti_seen === 'unseen' ? 'alert-success' : 'alert-dark';
+
+                    // Create and append notification
+                    const notificationItem = document.createElement('a');
+                    notificationItem.href = `${noti_url}?notification=${noti_uniqueid}`;
+                    notificationItem.innerHTML = `
+                        <div class="notification-item alert ${alertClass}" role="alert" title="${noti_date}">
+                            ${noti_message}
+                        </div>
+                    `;
+                    notificationsContainer.appendChild(notificationItem);
+                }
+            } else {
+                notificationsContainer.innerHTML = "<p>No Notifications</p>";
+                nfCountElement.textContent = 0; // Set count to zero if no notifications
+                nfCountBadgeElement.textContent = 0; // Set badge count to zero
+            }
+        })
+        .catch(error => console.error("Fetch Error:", error)); // Log fetch errors
+    }
+
+    function seenNotification() {
+        fetch('notification.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({ action: 'seen' })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Marked as seen:", data); // Log response for debugging
+            nfCountElement.textContent = 0; // Reset notification count to zero
+            nfCountBadgeElement.textContent = 0; // Reset badge count to zero
+        })
+        .catch(error => console.error("Fetch Error:", error)); // Log fetch errors
+    }
+
+    showNotification();
+    setInterval(showNotification, 5000); // Fetch notifications every 5 seconds
+
+    nfBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        notificationsContainer.classList.toggle('show');
+        seenNotification(); // Mark notifications as seen when the button is clicked
+    });
+
+    document.addEventListener('click', function() {
+        notificationsContainer.classList.remove('show');
+    });
+
+    notificationsContainer.addEventListener('click', function(e) {
+        e.stopPropagation(); // Prevent hiding when clicking inside notifications
+    });
+});
+

@@ -108,7 +108,7 @@ if (isset($_POST['submit'])) {
             $update_user = "UPDATE user_table SET is_verified=1, otp='', otp_expiry=NULL WHERE email='$email'";
             if (mysqli_query($conn, $update_user)) {
                 // Redirect to index.php upon successful verification
-                header('Location: index.php');
+                header('Location: add_worker.php');
                 exit;
             } else {
                 $_SESSION['error'] = 'Error updating verification status.';

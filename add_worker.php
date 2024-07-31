@@ -2,7 +2,6 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-//renz
 session_start();
 include('C:/xampp/htdocs/BeeMo_Code/connection/mysql_connection.php');
 
@@ -69,13 +68,30 @@ function generateOTP_user($email) {
     return array('otp' => $otp, 'otp_expiry' => $otp_expiry); // Return OTP and expiry time as an array
 }
 
+// Function to insert notifications
+function insertNotification($adminID, $noti_user_uniqueID, $noti_status, $message, $date, $noti_type, $noti_url, $noti_uniqueid, $noti_seen) {
+    global $conn;
+
+    // Ensure $noti_uniqueid is generated only once
+    $noti_user_uniqueID = uniqid();
+    $noti_uniqueid = uniqid();
+    $date = date('Y-m-d H:i:s');
+
+    // Prepare the SQL query
+    $insert_noti = "INSERT INTO tblNotification (adminID, noti_user_uniqueID, noti_status, noti_message, noti_date, noti_type, noti_url, noti_uniqueid, noti_seen)
+    VALUES ('$adminID', '$noti_user_uniqueID', '$noti_status', '$message', '$date', '$noti_type', '$noti_url', '$noti_uniqueid', '$noti_seen')";
+
+    // Execute the query
+    mysqli_query($conn, $insert_noti);
+}
+
+
 // Handle the submission of OTP
 if (isset($_POST['submit'])) {
     $name = filter_var($_POST['user_name'], FILTER_SANITIZE_SPECIAL_CHARS);
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $number = filter_var($_POST['number'], FILTER_SANITIZE_SPECIAL_CHARS);
     $password = $_POST['password'];
-    $password_hash = password_hash($password, PASSWORD_BCRYPT);
     $adminID = $_SESSION['adminID'];
 
     // Check if email already exists
@@ -93,18 +109,21 @@ if (isset($_POST['submit'])) {
     $otp = $otpData['otp'];
     $otp_expiry = $otpData['otp_expiry'];
 
-    $insert_user = "INSERT INTO user_table (user_name, email, number, password, adminID, otp, is_verified, otp_expiry) VALUES ('$name', '$email', '$number', '$password_hash', '$adminID', '$otp', 0, '$otp_expiry')";
+    $insert_user = "INSERT INTO user_table (user_name, email, number, password, adminID, otp, is_verified, otp_expiry) VALUES ('$name', '$email', '$number', '$password', '$adminID', '$otp', 0, '$otp_expiry')";
     $insert_user_run = mysqli_query($conn, $insert_user);
 
     if ($insert_user_run) {
-       // Send email with OTP
-       if (sendOTP_user($email, $otp, $name)) {
-        $_SESSION['status'] = 'Registration Successful. Verify your Email Address with the OTP sent.';
-        $_SESSION['email'] = $email;
-        $_SESSION['user_name'] = $name; // Store user_name in session for resending OTP
-        $_SESSION['adminID'] = $adminID;
-        header('Location: verify_worker.php');
-        exit;
+        // Send email with OTP
+        if (sendOTP_user($email, $otp, $name)) {
+            $_SESSION['status'] = 'Registration Successful. Verify your Email Address with the OTP sent.';
+            $_SESSION['email'] = $email;
+            $_SESSION['user_name'] = $name; // Store user_name in session for resending OTP
+            $_SESSION['adminID'] = $adminID;
+
+            // Add notification
+            insertNotification($adminID, $noti_user_uniqueID, 'active', 'User was added successfully.', $date, 'add_user', 'add_worker.php', $noti_uniqueid, 'unseen');
+            header('Location: verify_worker.php');
+            exit;
         } else {
             $_SESSION['error'] = 'Failed to send OTP. Please try again later.';
             header('Location: add_worker.php');
@@ -117,26 +136,94 @@ if (isset($_POST['submit'])) {
     }
 }
 
-//DELETE USER
-if(isset($_POST['btn_delete'])){
+// DELETE USER
+if (isset($_POST['btn_delete'])) {
     $user_ID = $_POST['user_ID'];
     $adminID = $_SESSION['adminID'];
     $delete_user = "DELETE FROM user_table WHERE user_ID = '$user_ID' AND adminID = '$adminID'";
     $delete_query = mysqli_query($conn, $delete_user);
 
-    if($delete_query){
-        $_SESSION['status'] = 'Successfully deleted';
+    if ($delete_query) {
+        $_SESSION['status'] = 'User deleted successfully.';
+
+        // Add notification
+        insertNotification($adminID, $noti_user_uniqueID, 'active', 'User was deleted successfully.', $date, 'delete_user', 'add_worker.php', $noti_uniqueid, 'unseen');
         header('Location: add_worker.php');
         exit;
-    }else{
-        $_SESSION['error'] = 'Failed to deleted';
+    } else {
+        $_SESSION['error'] = 'Failed to delete user. Please try again.';
         header('Location: add_worker.php');
         exit;
     }
-    header('Location: index.php');
-    exit;
+}
+
+// EDIT USER ACCOUNT CREDENTIALS
+if (isset($_POST['edit_btn'])) {
+    $adminID = $_SESSION['adminID'];
+    $user_ID = $_POST['user_ID']; // Ensure you capture the user ID for the record being edited
+    $worker_list = "SELECT user_ID, user_name, email, number, password FROM user_table WHERE user_ID = '$user_ID' AND adminID = '$adminID'";
+    $list_query = mysqli_query($conn, $worker_list);
+    $row = $list_query->fetch_assoc();
+    $current_name = $row['user_name'];
+    $current_email = $row['email'];
+    $current_number = $row['number'];
+    $current_password = $row['password'];
+
+    $edit_name = filter_var($_POST['edit_user_name'], FILTER_SANITIZE_SPECIAL_CHARS);
+    $edit_email = filter_var($_POST['edit_email'], FILTER_SANITIZE_EMAIL);
+    $edit_number = filter_var($_POST['edit_number'], FILTER_SANITIZE_SPECIAL_CHARS);
+    $edit_password = $_POST['edit_password'];
+
+    $update_success = false;
+
+    if ($edit_name !== $current_name) {
+        $edit_name_query = "UPDATE user_table SET user_name = '$edit_name' WHERE user_ID = '$user_ID'";
+        $edit_name_result = mysqli_query($conn, $edit_name_query);
+        if ($edit_name_result) {
+            $update_success = true;
+        }
+    }
+
+    if ($edit_email !== $current_email) {
+        $edit_email_query = "UPDATE user_table SET email = '$edit_email' WHERE user_ID = '$user_ID'";
+        $edit_email_result = mysqli_query($conn, $edit_email_query);
+        if ($edit_email_result) {
+            $update_success = true;
+        }
+    }
+
+    if ($edit_number !== $current_number) {
+        $edit_number_query = "UPDATE user_table SET number = '$edit_number' WHERE user_ID = '$user_ID'";
+        $edit_number_result = mysqli_query($conn, $edit_number_query);
+        if ($edit_number_result) {
+            $update_success = true;
+        }
+    }
+
+    if ($edit_password !== $current_password) {
+        $edit_password_query = "UPDATE user_table SET password = '$edit_password' WHERE user_ID = '$user_ID'";
+        $edit_password_result = mysqli_query($conn, $edit_password_query);
+        if ($edit_password_result) {
+            $update_success = true;
+        }
+    }
+
+    if ($update_success) {
+        $_SESSION['status'] = "User information updated successfully.";
+        // Add notification
+        insertNotification($adminID, $noti_user_uniqueID, 'active', 'User info was edited successfully.', $date, 'edit_user', 'add_worker.php', $noti_uniqueid, 'unseen');
+        header('Location: add_worker.php');
+        exit;
+    } else {
+        $_SESSION['error'] = 'No changes were made.';
+        header('Location: add_worker.php');
+        exit;
+    }
 }
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -204,43 +291,48 @@ if(isset($_POST['btn_delete'])){
     </div>
 
     <!-- Main -->
-    <main class="bg-light">
-        <div class="p-2">
-            <!-- Navbar -->
-            <nav class="px-3 py-3 rounded-4">
-                <div>
-                    <p class="d-none d-lg-block mt-3 mx-3 fw-semibold">Welcome to BeeMo</p>
-                </div>
-                <i class="fa-solid fa-bars sidebar-toggle me-3 d-block d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNav-Menu" aria-controls="offcanvasRight" aria-expanded="false" aria-label="Toggle navigation"></i>
-                <h5 class="fw-bold mb-0 me-auto"></h5>
-                <div class="dropdown me-3 d-sm-block">
-                    <div class="navbar-link border border-1 border-black rounded-5" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class=" fa-solid fa-bell"></i>
-                    </div>
-
-                    <div class="dropdown-menu dropdown-menu-start border-dark border-2 rounded-3" style="width: 320px;">
-                        <div class="d-flex justify-content-between dropdown-header border-dark border-2">
-                            <div>
-                                <p class="fs-5 text-dark text-uppercase">Notification <span class="badge text-dark bg-warning-subtle rounded-pill">14</span></p>
+        <main class="bg-light">
+            <div class="p-2">
+                    <!-- Navbar -->
+                    <nav class="px-3 py-3 rounded-4">
+                        <div>
+                            <p class="d-none d-lg-block mt-3 mx-3 fw-semibold">Welcome to BeeMo</p>
+                        </div>
+                        <i class="fa-solid fa-bars sidebar-toggle me-3 d-block d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNav-Menu" aria-controls="offcanvasRight" aria-expanded="false" aria-label="Toggle navigation"></i>
+                        <h5 class="fw-bold mb-0 me-auto"></h5>
+                        <div class="dropdown me-3 d-sm-block">
+                            <div id="nf-btn" class="navbar-link border border-1 border-black rounded-5" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-bell"></i>
+                                <span id="nf-count"></span>
                             </div>
-                            <div>
-                                <i class="pt-1 px-1 fa-solid fa-ellipsis-vertical fs-5"></i>
+                            <div class="dropdown-menu dropdown-menu-start border-dark border-2 rounded-3" style="width: 320px;">
+                                <div class="d-flex justify-content-between dropdown-header border-dark border-2">
+                                    <div>
+                                        <p class="fs-5 text-dark text-uppercase">Notifications
+                                            <span class="badge text-dark bg-warning-subtle rounded-pill" id="nf-count-badge">0</span>
+                                        </p>
+                                        <div id="notifications">
+                                            <!-- Notifications will be dynamically inserted here by JavaScript -->
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <i class="pt-1 px-1 fa-solid fa-ellipsis-vertical fs-5"></i>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="dropdown me-3  d-sm-block">
-                    <div class="navbar-link  border border-1 border-black rounded-5"  data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="termsandconditions.html">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                </div>
-            </nav>
+                        <div class="dropdown me-3  d-sm-block">
+                            <div class="navbar-link  border border-1 border-black rounded-5"  data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li><a class="dropdown-item" href="termsandconditions.html">Action</a></li>
+                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            </ul>
+                        </div>
+                    </nav>
             <!-- Content -->
             <div class="worker-page py-3 mt-4 border border-2 rounded-4 border-dark">
                 <div class="px-4 py-4 my-4 text-center content-wrapper">
@@ -271,43 +363,46 @@ if(isset($_POST['btn_delete'])){
                                         <td>". $row['number'] ."</td>
                                         <td>". $row['password'] ." </td>
                                         <td>
-                                        <button name='btn_edit' class='btn edit-btn'><i class='fa-regular fa-pen-to-square data-bs-toggle='modal' data-bs-target = '#Edit_Worker''></i></button>
-                                        <div class='yellow mt-1 d-md-none fixed-bottom p-0 m-0'></div>
-                                            <div class='modal fade' id='Edit_Worker' tabindex='-1' aria-labelledby='Edit_WorkerLabel' aria-hidden='true'>
-                                                <div class='modal-dialog modal-lg modal-dialog-centered rounded-3' >
+                                        <button name='btn_edit' class='btn edit-btn' data-bs-toggle='modal' type='button' data-bs-target='#Edit_WorkerModal'>
+                                                <i class='fa-regular fa-pen-to-square'></i>
+                                            </button>
+                                            <div class='yellow mt-1 d-md-none fixed-bottom p-0 m-0'></div>
+                                            <div class='modal fade' id='Edit_WorkerModal' tabindex='-1' aria-labelledby='Edit_WorkerLabel' aria-hidden='true'>
+                                                <div class='modal-dialog modal-lg modal-dialog-centered rounded-3'>
                                                     <div class='modal-content' style='border: 2px solid #2B2B2B;'>
                                                         <div class='modal-header border-dark border-2' style='background-color: #FCF4B9;'>
                                                             <h5 class='modal-title fw-semibold mx-4' id='Edit_WorkerLabel'>Add Worker</h5>
                                                             <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
                                                         </div>
                                                         <div class='modal-body m-5'>
-                                                            <form action='add_worker.php' method='post' id='workerForm' novalidate>
+                                                            <form action='add_worker.php' method='post' id='edit_workerForm' novalidate>
                                                                 <div class='d-grid d-sm-flex justify-content-sm-center gap-4 mb-1'>
                                                                     <div class='col-md-6'>
                                                                         <label for='FullName' class='form-label' style='font-size: 13px;'>Full Name</label>
-                                                                        <input name='user_name' type='text' class='form-control rounded-3 py-2' style='border: 1.8px solid #2B2B2B; font-size: 13px;' id='FullName' required>
+                                                                        <input name='edit_user_name' type='text' class='form-control rounded-3 py-2' style='border: 1.8px solid #2B2B2B; font-size: 13px;' id='Edit_FullName' value = '".$row['user_name']."' required>
                                                                         <div class='invalid-feedback'>Please enter your full name.</div>
                                                                     </div>
                                                                     <div class='mb-3 col-md-6'>
                                                                         <label for='Email' class='form-label' style='font-size: 13px;'>Email</label>
-                                                                        <input name='email' type='email' class='form-control rounded-3 py-2' style='border: 1.8px solid #2B2B2B; font-size: 13px;' id='Email' required>
+                                                                        <input name='edit_email' type='email' class='form-control rounded-3 py-2' style='border: 1.8px solid #2B2B2B; font-size: 13px;' id='Edit_Email' value = '".$row['email']."' required>
                                                                         <div class='invalid-feedback'>Please enter a valid email address.</div>
                                                                     </div>
                                                                 </div>
                                                                 <div class='d-grid mt-3 d-sm-flex justify-content-sm-center gap-4'>
                                                                     <div class='col-md-6'>
                                                                         <label for='PhoneNumber' class='form-label' style='font-size: 13px;'>Phone Number</label>
-                                                                        <input name='number' type='text' class='form-control rounded-3 py-2' style='border: 1.8px solid #2B2B2B; font-size: 13px;' id='PhoneNumber' required>
+                                                                        <input name='edit_number' type='text' class='form-control rounded-3 py-2' style='border: 1.8px solid #2B2B2B; font-size: 13px;' id='Edit_PhoneNumber' value = '".$row['number']."' required>
                                                                         <div class='invalid-feedback'>Please enter a valid mobile number.</div>
                                                                     </div>
                                                                     <div class='col-md-6 mb-2'>
                                                                         <label for='Password' class='form-label' style='font-size: 13px;'>Password</label>
-                                                                        <input name='password' type='password' class='form-control rounded-3 py-2' style='border: 1.8px solid #2B2B2B; font-size: 13px;' id='Password' required>
+                                                                        <input name='edit_password' type='password' class='form-control rounded-3 py-2' style='border: 1.8px solid #2B2B2B; font-size: 13px;' id='Edit_Password' value = '".$row['password']."' required>
                                                                         <div class='invalid-feedback'>Password must be 8-32 characters long.</div>
                                                                     </div>
                                                                 </div>
                                                                 <div class='mt-5 d-flex justify-content-center'>
-                                                                    <button id='btn' name='submit' type='submit' class='save-button px-4 border border-1 border-black fw-semibold'><span class='fw-bold'>+</span> Add Worker</button>
+                                                                    <input type='hidden' name='user_ID' value='". $row['user_ID'] ."'>
+                                                                    <button id='Edit_btn' name='edit_btn' type='submit' class='save-button px-4 border border-1 border-black fw-semibold'><span class='fw-bold'>+</span> Add Worker</button>
                                                                 </div>
                                                             </form>
                                                         </div>
